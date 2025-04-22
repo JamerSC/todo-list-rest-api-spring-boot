@@ -18,6 +18,8 @@ public class TodoServiceImpl implements TodoService {
     private TodoRespository todoRespository;
     @Override
     public List<Todo> findAll() {
-        return todoRespository.findAll();
+        List<Todo> todos = todoRespository.findAll();
+        todos.forEach(System.out::println);
+        return todos;
     }
 }
