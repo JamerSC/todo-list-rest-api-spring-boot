@@ -10,6 +10,8 @@
 ### Application Architecture
 React Web Application <-> Spring boot Rest API Service
 
+### April 22, 2025
+
 ### Annotations
 - `@RestController` is a convenience annotation in Spring Boot that is used to create RESTful web services. It is a combination of two annotations:
   - ✅ @RestController = @Controller + @ResponseBody
@@ -26,3 +28,6 @@ React Web Application <-> Spring boot Rest API Service
   - a. Starts a transaction before the method runs.
   - b. Commits the transaction if the method completes successfully.
   - c. Rolls back the transaction if the method throws an exception.
+
+### April 23, 2025
+- Prepare HTTP Methods - CRUD

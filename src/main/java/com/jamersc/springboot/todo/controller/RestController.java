@@ -4,9 +4,7 @@ import com.jamersc.springboot.todo.entity.Todo;
 import com.jamersc.springboot.todo.service.TodoService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +21,26 @@ public class RestController {
     public List<Todo> getAllTask() {
         return todoService.findAll();
     }
+
+    @GetMapping("/todos/{id}")
+    public Todo getTodoById(@PathVariable int id) {
+        return todoService.findById(id);
+    }
+
+    @PostMapping("/todos")
+    public Todo createTodo(@RequestBody Todo todo) {
+        return todoService.save(todo);
+    }
+
+    @PutMapping("/todos")
+    public Todo updateTodo(@RequestBody Todo todo) {
+        return todoService.save(todo);
+    }
+
+    @DeleteMapping("/todos/{id}")
+    public String deleteTodoById(@PathVariable int id) {
+        todoService.delete(id);
+        return "Deleted todo id - " + id;
+    }
+
 }
