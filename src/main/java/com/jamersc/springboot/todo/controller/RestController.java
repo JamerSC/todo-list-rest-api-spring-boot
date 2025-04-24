@@ -32,9 +32,22 @@ public class RestController {
         return todoService.save(todo);
     }
 
-    @PutMapping("/todos")
+    /*@PutMapping("/todos")
     public Todo updateTodo(@RequestBody Todo todo) {
         return todoService.save(todo);
+    }*/
+
+    // working - id is not replaceable - throws error
+    @PutMapping("/todos/{id}")
+    public Todo updateTodo(@PathVariable int id, @RequestBody Todo updateTodo) {
+        Todo todo = todoService.findById(id);
+        if (todo != null) {
+            todo.setTitle(updateTodo.getTitle());
+            todo.setDescription(updateTodo.getDescription());
+            todo.setStatus(updateTodo.getStatus());
+            return todoService.save(todo);
+        }
+        throw new RuntimeException("Todo id not found - " + id);
     }
 
     @DeleteMapping("/todos/{id}")

@@ -31,3 +31,6 @@ React Web Application <-> Spring boot Rest API Service
 
 ### April 23, 2025
 - Prepare HTTP Methods - CRUD
+
+### April 24, 2025
+- Updated REST Controller, Front End updated the FETCH API CRUD
