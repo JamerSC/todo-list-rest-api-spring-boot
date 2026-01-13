@@ -34,3 +34,8 @@ React Web Application <-> Spring boot Rest API Service
 
 ### April 24, 2025
 - Updated REST Controller, Front End updated the FETCH API CRUD
+
+### January 13, 2025
+- Code refactor todo, entity, controller/endpoint, etc.
+- Implement JPA Specification, Pageable, & custom response
+- Added Postman collection for api testing
