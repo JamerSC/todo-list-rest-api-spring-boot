@@ -15,7 +15,7 @@ public interface TodoService {
             LocalDate dateTo,
             Pageable pageable
     );
-    Todo getTodo(int id);
     Todo save(Todo todo);
+    Todo getTodo(int id);
     void delete(int id);
 }
