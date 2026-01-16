@@ -19,7 +19,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class TodoServiceImpl implements TodoService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoServiceImpl.class);
@@ -34,8 +33,11 @@ public class TodoServiceImpl implements TodoService {
             LocalDate dateTo,
             Pageable pageable
     ) {
-        log.debug("Fetching all todos filters : search={}, status={}, dateFrom={}, dateTo={}, pageable={}",
+        log.info("Fetching all todos filters : search={}, status={}, dateFrom={}, dateTo={}, pageable={}",
                 search, status, dateFrom, dateTo, pageable);
+
+//        log.debug("Fetching all todos filters : search={}, status={}, dateFrom={}, dateTo={}, pageable={}",
+//                search, status, dateFrom, dateTo, pageable);
 
         Specification<Todo> spec = Specification.allOf(
                 TodoSpecification.search(search),
