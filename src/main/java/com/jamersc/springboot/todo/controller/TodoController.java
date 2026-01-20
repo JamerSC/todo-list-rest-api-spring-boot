@@ -1,9 +1,13 @@
 package com.jamersc.springboot.todo.controller;
 
+import com.jamersc.springboot.todo.dto.TodoCreateDto;
+import com.jamersc.springboot.todo.dto.TodoDto;
+import com.jamersc.springboot.todo.dto.TodoUpdateDto;
 import com.jamersc.springboot.todo.entity.Status;
 import com.jamersc.springboot.todo.entity.Todo;
 import com.jamersc.springboot.todo.service.TodoService;
 import com.jamersc.springboot.todo.util.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,14 +32,14 @@ public class TodoController {
     private TodoService todoService;
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<Page<Todo>>> getAllTask(
+    public ResponseEntity<ApiResponse<Page<TodoDto>>> getAllTask(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Status status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Todo> todos = todoService.getAllTodos(
+        Page<TodoDto> todos = todoService.getAllTodos(
                 search,
                 status,
                 dateFrom,
@@ -43,7 +47,7 @@ public class TodoController {
                 pageable
         );
 
-        ApiResponse<Page<Todo>> response = ApiResponse.<Page<Todo>>builder()
+        ApiResponse<Page<TodoDto>> response = ApiResponse.<Page<TodoDto>>builder()
                 .success(true)
                 .message("List of todos retrieved")
                 .data(todos)
@@ -55,10 +59,12 @@ public class TodoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse<Todo>> createTodo(@RequestBody Todo todo) {
-        Todo createdTodo = todoService.save(todo);
+    public ResponseEntity<ApiResponse<TodoDto>> createTodo(
+            @Valid @RequestBody TodoCreateDto dto
+    ) {
+        TodoDto createdTodo = todoService.save(dto);
         return ResponseEntity.ok(
-                ApiResponse.<Todo>builder()
+                ApiResponse.<TodoDto>builder()
                         .success(true)
                         .message("New todo created")
                         .data(createdTodo)
@@ -69,10 +75,12 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Todo>> getTodo(@PathVariable int id) {
-        Todo retrievedTodo = todoService.getTodo(id);
+    public ResponseEntity<ApiResponse<TodoDto>> getTodo(
+            @PathVariable int id
+    ) {
+        TodoDto retrievedTodo = todoService.getTodo(id);
         return ResponseEntity.ok(
-                ApiResponse.<Todo>builder()
+                ApiResponse.<TodoDto>builder()
                         .success(true)
                         .message("Todo retrieved")
                         .data(retrievedTodo)
@@ -83,17 +91,13 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Todo>> updateTodo(@PathVariable int id, @RequestBody Todo updateTodo) {
-        Todo todo = todoService.getTodo(id);
-
-        if (todo != null) {
-            todo.setTitle(updateTodo.getTitle());
-            todo.setDescription(updateTodo.getDescription());
-            todo.setStatus(updateTodo.getStatus());
-            Todo updatedTodo = todoService.save(todo);
-
+    public ResponseEntity<ApiResponse<TodoDto>> updateTodo(
+            @PathVariable int id,
+            @RequestBody TodoUpdateDto dto)
+    {
+        TodoDto updatedTodo = todoService.update(id, dto);
             return ResponseEntity.ok(
-                    ApiResponse.<Todo>builder()
+                    ApiResponse.<TodoDto>builder()
                             .success(true)
                             .message("Todo updated " + id)
                             .data(updatedTodo)
@@ -101,15 +105,11 @@ public class TodoController {
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        }
-
-        throw new RuntimeException("Todo id not found - " + id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteTodo(@PathVariable int id) {
-        Todo todo = todoService.getTodo(id);
-
+        TodoDto todo = todoService.getTodo(id);
         if (todo != null) {
             todoService.delete(id);
             return ResponseEntity.ok(
@@ -122,8 +122,7 @@ public class TodoController {
                             .build()
             );
         }
-
-        throw new RuntimeException("Todo id not found - " + id);
+        return null;
     }
 
 }

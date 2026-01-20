@@ -1,7 +1,11 @@
 package com.jamersc.springboot.todo.service;
 
+import com.jamersc.springboot.todo.dto.TodoCreateDto;
+import com.jamersc.springboot.todo.dto.TodoDto;
+import com.jamersc.springboot.todo.dto.TodoUpdateDto;
 import com.jamersc.springboot.todo.entity.Status;
 import com.jamersc.springboot.todo.entity.Todo;
+import com.jamersc.springboot.todo.mapper.TodoMapper;
 import com.jamersc.springboot.todo.repository.TodoRepository;
 import com.jamersc.springboot.todo.repository.TodoSpecification;
 import jakarta.transaction.Transactional;
@@ -24,9 +28,14 @@ public class TodoServiceImpl implements TodoService {
     private static final Logger log = LoggerFactory.getLogger(TodoServiceImpl.class);
 
     @Autowired
-    private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
+
+    public TodoServiceImpl(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
+
     @Override
-    public Page<Todo> getAllTodos(
+    public Page<TodoDto> getAllTodos(
             String search,
             Status status,
             LocalDate dateFrom,
@@ -45,18 +54,30 @@ public class TodoServiceImpl implements TodoService {
                 TodoSpecification.dateRange(dateFrom, dateTo)
         );
 
-        return todoRepository.findAll(spec, pageable);
+        return todoRepository.findAll(spec, pageable).map(TodoMapper::toDto);
     }
 
     @Override
-    public Todo save(Todo todo) {
-        Todo createdTodo = todoRepository.save(todo);
-        log.info("Todo {} created/updated successfully!", createdTodo);
-        return createdTodo;
+    public TodoDto save(TodoCreateDto dto) {
+        Todo todo = TodoMapper.toEntity(dto);
+        Todo savedTodo = todoRepository.save(todo);
+        log.info("Todo {} created successfully!", savedTodo);
+        return TodoMapper.toDto(savedTodo);
     }
 
     @Override
-    public Todo getTodo(int id) {
+    public TodoDto update(int id, TodoUpdateDto dto) {
+        Todo existingTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
+        existingTodo.setTitle(dto.getTitle());
+        existingTodo.setDescription(dto.getDescription());
+        existingTodo.setStatus(Status.valueOf(dto.getStatus()));
+        Todo updatedTodo = todoRepository.save(existingTodo);
+        return TodoMapper.toDto(updatedTodo);
+    }
+
+    @Override
+    public TodoDto getTodo(int id) {
         // find a todo using optional (collection)
         Optional<Todo> result = todoRepository.findById(id);
         // create todo empty object
@@ -68,7 +89,7 @@ public class TodoServiceImpl implements TodoService {
             throw new RuntimeException("Todo id not found - " + id);
         }
         log.info("Todo retrieved successfully with id: {}", id);
-        return todo;
+        return TodoMapper.toDto(todo);
     }
 
     @Override
