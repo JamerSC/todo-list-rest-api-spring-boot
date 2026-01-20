@@ -5,6 +5,7 @@ import com.jamersc.springboot.todo.dto.TodoDto;
 import com.jamersc.springboot.todo.dto.TodoUpdateDto;
 import com.jamersc.springboot.todo.entity.Status;
 import com.jamersc.springboot.todo.entity.Todo;
+import com.jamersc.springboot.todo.exception.ResourceNotFoundException;
 import com.jamersc.springboot.todo.mapper.TodoMapper;
 import com.jamersc.springboot.todo.repository.TodoRepository;
 import com.jamersc.springboot.todo.repository.TodoSpecification;
@@ -66,17 +67,6 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoDto update(int id, TodoUpdateDto dto) {
-        Todo existingTodo = todoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
-        existingTodo.setTitle(dto.getTitle());
-        existingTodo.setDescription(dto.getDescription());
-        existingTodo.setStatus(Status.valueOf(dto.getStatus()));
-        Todo updatedTodo = todoRepository.save(existingTodo);
-        return TodoMapper.toDto(updatedTodo);
-    }
-
-    @Override
     public TodoDto getTodo(int id) {
         // find a todo using optional (collection)
         Optional<Todo> result = todoRepository.findById(id);
@@ -86,23 +76,29 @@ public class TodoServiceImpl implements TodoService {
             todo = result.get();
         } else {
             log.error("Todo not found with ID: " + id);
-            throw new RuntimeException("Todo id not found - " + id);
+            throw new ResourceNotFoundException("Todo id not found - " + id);
         }
         log.info("Todo retrieved successfully with id: {}", id);
         return TodoMapper.toDto(todo);
     }
 
     @Override
+    public TodoDto update(int id, TodoUpdateDto dto) {
+        Todo existingTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
+        existingTodo.setTitle(dto.getTitle());
+        existingTodo.setDescription(dto.getDescription());
+        existingTodo.setStatus(Status.valueOf(dto.getStatus()));
+        Todo updatedTodo = todoRepository.save(existingTodo);
+        return TodoMapper.toDto(updatedTodo);
+    }
+
+    @Override
     public void delete(int id) {
-        Optional<Todo> result = todoRepository.findById(id);
-        Todo todo = null;
-        if (result.isPresent()) {
-            todo = result.get();
-        } else {
-            log.error("Todo not found with ID: " + id);
-            throw new RuntimeException("Todo id not found - " + id);
-        }
-        log.info("Todo deleted successfully with id: {}", id);
-        todoRepository.delete(todo);
+        Todo existingTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Todo not found with id: " + id)
+                );
+        todoRepository.delete(existingTodo);
     }
 }
