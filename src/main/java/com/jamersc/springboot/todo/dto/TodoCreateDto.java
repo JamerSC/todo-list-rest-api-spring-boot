@@ -10,6 +10,6 @@ public class TodoCreateDto {
     private String title;
     @NotBlank(message = "Description is required")
     private String description;
-    @NotNull(message = "Status is required")
+    @NotBlank(message = "Status is required")
     private String status; // frontend sends enum string
 }

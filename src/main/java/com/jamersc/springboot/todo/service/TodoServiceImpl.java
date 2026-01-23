@@ -100,5 +100,6 @@ public class TodoServiceImpl implements TodoService {
                         "Todo not found with id: " + id)
                 );
         todoRepository.delete(existingTodo);
+        log.info("Todo deleted successfully with id: {}", id);
     }
 }

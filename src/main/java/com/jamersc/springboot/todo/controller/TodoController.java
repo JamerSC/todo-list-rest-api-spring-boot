@@ -49,7 +49,7 @@ public class TodoController {
 
         ApiResponse<Page<TodoDto>> response = ApiResponse.<Page<TodoDto>>builder()
                 .success(true)
-                .message("List of todos retrieved")
+                .message("List of todos retrieved successfully")
                 .data(todos)
                 .status(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
@@ -66,7 +66,7 @@ public class TodoController {
         return ResponseEntity.ok(
                 ApiResponse.<TodoDto>builder()
                         .success(true)
-                        .message("New todo created")
+                        .message("Todo created successfully")
                         .data(createdTodo)
                         .status(HttpStatus.CREATED.value())
                         .timestamp(LocalDateTime.now())
@@ -82,7 +82,7 @@ public class TodoController {
         return ResponseEntity.ok(
                 ApiResponse.<TodoDto>builder()
                         .success(true)
-                        .message("Todo retrieved")
+                        .message("Todo retrieved successfully")
                         .data(retrievedTodo)
                         .status(HttpStatus.OK.value())
                         .timestamp(LocalDateTime.now())
@@ -99,7 +99,7 @@ public class TodoController {
             return ResponseEntity.ok(
                     ApiResponse.<TodoDto>builder()
                             .success(true)
-                            .message("Todo updated " + id)
+                            .message("Todo updated successfully!")
                             .data(updatedTodo)
                             .status(HttpStatus.OK.value())
                             .timestamp(LocalDateTime.now())
@@ -109,20 +109,18 @@ public class TodoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteTodo(@PathVariable int id) {
-        TodoDto todo = todoService.getTodo(id);
-        if (todo != null) {
-            todoService.delete(id);
-            return ResponseEntity.ok(
-                    ApiResponse.<String>builder()
-                            .success(true)
-                            .message("Todo deleted " + id)
-                            .data(null)
-                            .status(HttpStatus.NO_CONTENT.value())
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
-        return null;
+        TodoDto retrievedTodo = todoService.getTodo(id);
+        todoService.delete(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.<String>builder()
+                        .success(true)
+                        .message("Todo deleted successfully with id: " + id)
+                        .data(String.valueOf(retrievedTodo))
+                        .status(HttpStatus.OK.value())
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
     }
 
 }
