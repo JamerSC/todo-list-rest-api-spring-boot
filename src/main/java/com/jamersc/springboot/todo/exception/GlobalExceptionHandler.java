@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse response = ApiErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Validation failed")
+                .message("Validation failed, please complete the required fields!")
                 .path(request.getRequestURI())
                 .timestamp(OffsetDateTime.now())
                 .fieldErrors(fieldErrors)

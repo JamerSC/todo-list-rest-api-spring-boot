@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000") // todo web react localhost ip
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/todos")
 @AllArgsConstructor
@@ -115,7 +115,7 @@ public class TodoController {
         return ResponseEntity.ok(
                 ApiResponse.<String>builder()
                         .success(true)
-                        .message("Todo deleted successfully with id: " + id)
+                        .message("Todo deleted successfully")
                         .data(String.valueOf(retrievedTodo))
                         .status(HttpStatus.OK.value())
                         .timestamp(LocalDateTime.now())
