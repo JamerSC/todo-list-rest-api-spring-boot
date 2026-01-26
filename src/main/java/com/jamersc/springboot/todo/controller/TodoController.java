@@ -93,7 +93,7 @@ public class TodoController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TodoDto>> updateTodo(
             @PathVariable int id,
-            @RequestBody TodoUpdateDto dto)
+            @Valid @RequestBody TodoUpdateDto dto)
     {
         TodoDto updatedTodo = todoService.update(id, dto);
             return ResponseEntity.ok(

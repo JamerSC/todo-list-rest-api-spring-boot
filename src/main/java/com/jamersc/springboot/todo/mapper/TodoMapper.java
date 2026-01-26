@@ -16,6 +16,8 @@ public class TodoMapper {
                 .title(todo.getTitle())
                 .description(todo.getDescription())
                 .status(todo.getStatus())
+                .createdAt(todo.getCreatedAt())
+                .updatedAt(todo.getUpdatedAt())
                 .build();
     }
 

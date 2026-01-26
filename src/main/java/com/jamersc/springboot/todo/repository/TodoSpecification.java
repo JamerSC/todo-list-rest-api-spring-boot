@@ -27,7 +27,8 @@ public class TodoSpecification {
 
             return cb.or(
                     cb.like(cb.lower(root.get("title")), pattern),
-                    cb.like(cb.lower(root.get("description")), pattern)
+                    cb.like(cb.lower(root.get("description")), pattern),
+                    cb.like(cb.lower(root.get("status")), pattern)
             );
         };
     }
