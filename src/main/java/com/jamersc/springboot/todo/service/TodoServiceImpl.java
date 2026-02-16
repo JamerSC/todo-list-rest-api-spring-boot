@@ -11,6 +11,8 @@ import com.jamersc.springboot.todo.repository.TodoRepository;
 import com.jamersc.springboot.todo.repository.TodoSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +26,12 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
+@RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
-
-    private static final Logger log = LoggerFactory.getLogger(TodoServiceImpl.class);
 
     @Autowired
     private final TodoRepository todoRepository;
-
-    public TodoServiceImpl(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
-    }
 
     @Override
     public Page<TodoDto> getAllTodos(
